@@ -9,13 +9,16 @@ var n int
 var a, b float64
 
 func my_f(x, eps float64) float64 {
-	// x = (math.Abs(arctg(x, eps)) * 2) / math.Pi
+	x = (math.Abs(arctg(x, eps)) * 2) / math.Pi
 	result := float64(1)
 	k := 1
 	step := result
 	for math.Abs(step) >= eps {
-		step *= -2 * float64(k) * x * (float64(3-2*k) / float64(4*math.Pow(float64(k), 2)*
-			float64(1-2*k)))
+		// step *= -2 * float64(k) * x * (float64(3-2*k) / float64(4*math.Pow(float64(k), 2)*
+		// 	float64(1-2*k)))
+		step *= -1 * float64(x) *
+			(float64((2*k-1)*2*k*(1-2*(k-1))) /
+				float64(float64(1-2*k)*math.Pow(float64(k), 2)*4))
 		result += step
 		k++
 	}
@@ -78,7 +81,7 @@ func odd_array(n int, digits []float64, eps float64) [][]float64 {
 	}
 	k := 0
 	m := 1
-	result[n/2][n/2] = digits[0]
+	result[n/2][n/2] = my_f(digits[0], eps)
 	now_x := n / 2
 	now_y := n / 2
 	count := 0
@@ -134,7 +137,7 @@ func honest_array(n int, digits []float64, eps float64) [][]float64 {
 	}
 	k := 0
 	m := 1
-	result[n/2-1][n/2-1] = digits[0]
+	result[n/2-1][n/2-1] = my_f(digits[0], eps)
 	now_x := n/2 - 1
 	now_y := n/2 - 1
 	count := 0
@@ -210,9 +213,8 @@ func main() {
 	now_digit := a
 	for i := 0; i < n*n; i++ {
 		digits[i] = now_digit
-		now_digit += (b - a) / float64(n-1)
+		now_digit += (b - a) / float64(n*n)
 	}
-	fmt.Println(len(digits))
 	if n%2 == 1 {
 		result = odd_array(n, digits, eps)
 	} else {
